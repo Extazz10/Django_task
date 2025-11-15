@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ task.title }}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h2 class="h4 mb-1">{{ task.title }}</h2>
+    <div class="text-muted small">Created: {{ task.created_at|date:"Y-m-d H:i" }}</div>
+  </div>
+
+  <div>
+    {% if task.completed %}
+      <span class="badge badge-success">Done</span>
+    {% else %}
+      <span class="badge badge-secondary">In process</span>
+    {% endif %}
+  </div>
+</div>
+
+{% if task.description %}
+  <div class="mb-4">{{ task.description|linebreaks }}</div>
+{% else %}
+  <div class="mb-4 text-muted">Not description</div>
+{% endif %}
+
+<div class="btn-group" role="group">
+  <a class="btn btn-outline-secondary" href="{% url 'tasks:toggle_complete' task.pk %}">
+    {% if task.completed %}Notice{% else %}Mark as completed{% endif %}
+  </a>
+  <a class="btn btn-info" href="{% url 'tasks:task_update' task.pk %}">Redact</a>
+  <a class="btn btn-danger" href="{% url 'tasks:task_delete' task.pk %}">Delete</a>
+  <a class="btn btn-secondary" href="{% url 'tasks:index' %}">Previous</a>
+</div>
+{% endblock %}

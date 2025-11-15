@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}
+My Tasks
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">My tasks</h1>
+  <div>
+    <a class="btn btn-success" href="{% url 'tasks:task_create' %}">+ Add a task</a>
+  </div>
+</div>
+
+<form method="get" class="form-inline mb-3">
+  <input name="q" value="{{ q }}" class="form-control mr-2" placeholder="Поиск по задачам" />
+  <button class="btn btn-outline-primary">Search</button>
+</form>
+
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead class="thead-light">
+      <tr>
+        <th>Task</th>
+        <th style="width:130px;">Status</th>
+        <th style="width:160px;">Date</th>
+        <th style="width:320px;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+        <tr>
+          <td>
+            <a href="{% url 'tasks:task_detail' task.pk %}">{{ task.title }}</a>
+            {% if task.description %}
+              <div class="small text-muted">{{ task.description|truncatewords:15 }}</div>
+            {% endif %}
+          </td>
+          <td class="align-middle">
+            {% if task.completed %}
+              <span class="badge badge-success">Done</span>
+            {% else %}
+              <span class="badge badge-secondary">In process</span>
+            {% endif %}
+          </td>
+          <td class="align-middle text-nowrap">{{ task.created_at|date:"Y-m-d H:i" }}</td>
+          <td class="align-middle">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'tasks:toggle_complete' task.pk %}">
+              {% if task.completed %}Cancel{% else %}Cancel{% endif %}
+            </a>
+            <a class="btn btn-sm btn-outline-info" href="{% url 'tasks:task_update' task.pk %}">Редактировать</a>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'tasks:task_detail' task.pk %}">Подробнее</a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'tasks:task_delete' task.pk %}">Удалить</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">Not tasks - create or put tasks</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if tasks.has_other_pages %}
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      {% if tasks.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ tasks.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">Предыдущая</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+      {% endif %}
+
+      <li class="page-item disabled"><span class="page-link">Стр. {{ tasks.number }} из {{ tasks.paginator.num_pages }}</span></li>
+
+      {% if tasks.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ tasks.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Следующая</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+{% endblock %}

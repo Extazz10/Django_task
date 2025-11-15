@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+{% if task %}
+Redact
+{% else %}
+New task
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h2 class="h5 mb-3">{% if task %}Redact tasks{% else %}Create task{% endif %}</h2>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+  {% endif %}
+
+  <div class="form-group">
+    {{ form.title.label_tag }}
+    {{ form.title }}
+    {% for e in form.title.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  </div>
+
+  <div class="form-group">
+    {{ form.description.label_tag }}
+    {{ form.description }}
+    {% for e in form.description.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  </div>
+
+  <div class="form-group form-check">
+    {{ form.completed }}
+    {{ form.completed.label_tag }}
+    {% for e in form.completed.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  </div>
+
+  <button class="btn btn-primary" type="submit">Save</button>
+  <a class="btn btn-secondary" href="{% url 'tasks:index' %}">Cancel</a>
+</form>
+{% endblock %}

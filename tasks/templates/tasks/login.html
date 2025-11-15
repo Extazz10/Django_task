@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}
+LogIn
+{% endblock %}
+
+{% block content %}
+<h2 class="h5 mb-3">Login in account</h2>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="form-group">
+    {{ form.username.label_tag }}
+    {{ form.username }}
+    {% for e in form.username.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  </div>
+
+  <div class="form-group">
+    {{ form.password.label_tag }}
+    {{ form.password }}
+    {% for e in form.password.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  </div>
+
+  <button class="btn btn-primary" type="submit">LogIn</button>
+</form>
+
+<p class="mt-3">No account? <a href="{% url 'tasks:registration' %}">Register</a></p>
+{% endblock %}
